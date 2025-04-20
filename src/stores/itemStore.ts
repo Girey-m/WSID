@@ -5,6 +5,7 @@ class ItemStore {
 
   constructor() {
     const saved = localStorage.getItem("items");
+    console.log("Загрузка из localStorage:", saved); // debug
     try {
       this.items = saved ? JSON.parse(saved) : ["all", "current", "done"];
     } catch (error) {
@@ -25,6 +26,18 @@ class ItemStore {
 
   setItems(items: string[]) {
     this.items = items;
+    localStorage.setItem("items", JSON.stringify(this.items));
+  }
+
+  addItem(item: string) {
+    if (this.items.includes(item)) {
+      console.warn("Попытка добавить дубликат:", item);
+      return;
+    }
+    const currentItems = [...this.items];
+    currentItems.splice(0, 0, item);
+    this.items = currentItems;
+    console.log("Сохраняем в localStorage:", currentItems);
     localStorage.setItem("items", JSON.stringify(this.items));
   }
 }
