@@ -15,7 +15,6 @@ import { useHandleDragEnd } from "./hooks/useHandleDragEnd";
 
 export const App = observer(function App() {
   const handleDragEnd = useHandleDragEnd();
-  console.log(useHandleDragEnd(), 'FUNC');
 
   useEffect(() => {
     const dispose = autorun(() => {

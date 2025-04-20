@@ -1,11 +1,17 @@
 import { makeAutoObservable } from "mobx";
 
-class ItemStrore {
+class ItemStore {
   items: string[] = [];
 
   constructor() {
     const saved = localStorage.getItem("items");
-    this.items = saved ? JSON.parse(saved) : ["all", "current", "done"];
+    try {
+      this.items = saved ? JSON.parse(saved) : ["all", "current", "done"];
+    } catch (error) {
+      console.error("Failed to load items from localStorage", error);
+      this.items = ["all", "current", "done"];
+    }
+
     makeAutoObservable(this);
   }
 
@@ -23,4 +29,4 @@ class ItemStrore {
   }
 }
 
-export const itemsStore = new ItemStrore();
+export const itemsStore = new ItemStore();
