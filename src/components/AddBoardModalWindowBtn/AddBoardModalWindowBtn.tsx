@@ -1,12 +1,11 @@
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { AddBoardModalWindowBtnProps } from "../../interface/AddBoardModalWindowBtnProps";
 
 // Компонент кнопки
 export function AddBoardModalWindowBtn({
   openModal,
-}: {
-  openModal: () => void;
-}) {
+}: Readonly<AddBoardModalWindowBtnProps>) {
   return (
     <Button
       onClick={openModal}
@@ -14,7 +13,7 @@ export function AddBoardModalWindowBtn({
       color="primary"
       startIcon={<EditIcon sx={{ transform: "scale(1.5)" }} />}
     >
-      Открыть модальное окно
+      Создать доску задач
     </Button>
   );
 }

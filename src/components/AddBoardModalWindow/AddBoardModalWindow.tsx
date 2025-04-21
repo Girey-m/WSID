@@ -1,6 +1,5 @@
 import { createPortal } from "react-dom";
-import { Container, TextField, Button, Box, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Container, TextField, Button, Box } from "@mui/material";
 import { AddBoardModalWindowI } from "../../interface/AddBoardModalWindowI";
 import { useState, useEffect } from "react";
 
@@ -11,16 +10,16 @@ export function AddBoardModalWindow({
 }: AddBoardModalWindowI) {
   const [boardName, setBoardName] = useState("Новая доска");
   const [boardId, setBoardId] = useState("");
-  const [boardColor, setBoardColor] = useState("#1976d2"); // Начальный цвет
+  const [boardColor, setBoardColor] = useState("#000000");
 
   useEffect(() => {
     const generatedId =
       boardName
         .toLowerCase()
-        .normalize("NFD") // убирает диакритику
-        .replace(/[\u0300-\u036f]/g, "") // убирает акценты
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "") || "board-" + Date.now(); // если пустой, делаем запасной вариант
+        .replace(/[^a-z0-9-]/g, "") || "board-" + Date.now();
 
     setBoardId(generatedId);
   }, [boardName]);
@@ -55,13 +54,6 @@ export function AddBoardModalWindow({
         gap: 2,
       }}
     >
-      <IconButton
-        onClick={onClose}
-        sx={{ position: "absolute", right: 8, top: 8 }}
-      >
-        <CloseIcon />
-      </IconButton>
-
       <TextField
         label="Название доски"
         value={boardName}
@@ -83,7 +75,7 @@ export function AddBoardModalWindow({
         value={boardColor}
         onChange={(e) => setBoardColor(e.target.value)}
         fullWidth
-        InputProps={{
+        sx={{
           style: {
             height: "50px",
             padding: "5px",

@@ -6,5 +6,5 @@ export function AddBoard(
   setBoard: React.Dispatch<React.SetStateAction<BoxData[]>>
 ) {
   setBoard((prevBoard) => [...prevBoard, newBoard]);
-  itemsStore.addItem(newBoard.title);
+  itemsStore.addItem(newBoard);
 }

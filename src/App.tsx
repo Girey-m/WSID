@@ -24,23 +24,17 @@ export const App = observer(function App() {
 
   const [boards, setBoards] = useState<BoxData[]>([]);
 
+  function getBoardFromInitialOrItem(item: BoxData): BoxData {
+    const fromInitial = initialBoxes.find((box) => box.id === item.id);
+    return fromInitial || item;
+  }
+
   useEffect(() => {
     const disposer = autorun(() => {
-      const savedBoards = itemsStore.items.map((id) => {
-        const fromInitial = initialBoxes.find((box) => box.id === id);
-        return (
-          fromInitial || {
-            id,
-            title: id,
-            color: "#1976d2",
-          }
-        );
-      });
-
+      const savedBoards = itemsStore.items.map(getBoardFromInitialOrItem);
       setBoards(savedBoards);
     });
-
-    return () => disposer(); // не забудь очистить
+    return () => disposer();
   }, []);
 
   const handleSaveBoard = (newBoard: BoxData) => {
@@ -55,40 +49,44 @@ export const App = observer(function App() {
   }, []);
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        background: "aqua",
-        gap: 2,
-        padding: 4,
-      }}
-    >
+    <Container>
       <AddBoardModalWindowBtn openModal={() => setIsModalOpen(true)} />
       <AddBoardModalWindow
         isVisible={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveBoard}
       />
-      <DragAndDropLayout onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={itemsStore.items}
-          strategy={verticalListSortingStrategy}
-        >
-          {itemsStore.items.map((id: string) => {
-            const box = boards.find((b) => b.id === id);
-            if (!box) return null;
-            return (
-              <SortableBox
-                key={id}
-                id={id}
-                title={box.title}
-                color={box.color}
-              />
-            );
-          })}
-        </SortableContext>
-      </DragAndDropLayout>
+      <Container
+        sx={{
+          display: "flex",
+          maxWidth: "1440px",
+          overflowX: "auto",
+          overflowY: "hidden",
+          justifyContent: "flex-start",
+          gap: 2,
+          padding: 4,
+        }}
+      >
+        <DragAndDropLayout onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={itemsStore.items}
+            strategy={verticalListSortingStrategy}
+          >
+            {itemsStore.items.map((item: BoxData) => {
+              const box = boards.find((b) => b.id === item.id);
+              if (!box) return null;
+              return (
+                <SortableBox
+                  key={item.id}
+                  id={item.id}
+                  title={box.title}
+                  color={box.color}
+                />
+              );
+            })}
+          </SortableContext>
+        </DragAndDropLayout>
+      </Container>
     </Container>
   );
 });

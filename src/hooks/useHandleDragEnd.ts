@@ -6,8 +6,12 @@ export function useHandleDragEnd() {
     const { active, over } = event;
 
     if (over && active.id) {
-      const oldIndex = itemsStore.items.indexOf(String(active.id));
-      const newIndex = itemsStore.items.indexOf(String(over.id));
+      const oldIndex = itemsStore.items.findIndex(
+        (item) => item.id === String(active.id)
+      );
+      const newIndex = itemsStore.items.findIndex(
+        (item) => item.id === String(over.id)
+      );
 
       if (oldIndex !== -1 && newIndex !== -1) {
         itemsStore.moveItem(oldIndex, newIndex);

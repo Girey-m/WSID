@@ -1,16 +1,18 @@
 import { makeAutoObservable } from "mobx";
+import type { BoxData } from "../types/BoxDataType";
+import { initialBoxes } from "../constants/initialBoxes";
 
 class ItemStore {
-  items: string[] = [];
+  items: BoxData[] = [];
 
   constructor() {
     const saved = localStorage.getItem("items");
     console.log("Загрузка из localStorage:", saved); // debug
     try {
-      this.items = saved ? JSON.parse(saved) : ["all", "current", "done"];
+      this.items = saved ? JSON.parse(saved) : initialBoxes;
     } catch (error) {
       console.error("Failed to load items from localStorage", error);
-      this.items = ["all", "current", "done"];
+      this.items = initialBoxes;
     }
 
     makeAutoObservable(this);
@@ -18,18 +20,18 @@ class ItemStore {
 
   moveItem(oldIndex: number, newIndex: number) {
     const moved = [...this.items];
-    const [removed] = moved.splice(oldIndex, 1); // теперь точно удаляет
-    moved.splice(newIndex, 0, removed); // и вставляем на новое место
+    const [removed] = moved.splice(oldIndex, 1);
+    moved.splice(newIndex, 0, removed);
     this.items = moved;
     localStorage.setItem("items", JSON.stringify(this.items));
   }
 
-  setItems(items: string[]) {
+  setItems(items: BoxData[]) {
     this.items = items;
     localStorage.setItem("items", JSON.stringify(this.items));
   }
 
-  addItem(item: string) {
+  addItem(item: BoxData) {
     if (this.items.includes(item)) {
       console.warn("Попытка добавить дубликат:", item);
       return;
