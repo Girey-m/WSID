@@ -5,6 +5,8 @@ import { BoxData } from "../../types/BoxDataType";
 import { useDndContext } from "@dnd-kit/core";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 
+import { ActionMenuBtn } from "../ActionMenuBtn/ActionMenuBtn";
+
 export function SortableBox({ id, title, color }: Readonly<BoxData>) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -27,6 +29,7 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         position: "relative",
         display: "flex",
         alignItems: "center",
+        justifyContent: "space-between",
         gap: 1.5,
         boxShadow: isActive ? 3 : 1,
         "&:hover": {
@@ -59,10 +62,12 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
           textOverflow: "ellipsis",
           overflow: "hidden",
           whiteSpace: "nowrap",
+          fontSize: "16px",
         }}
       >
         {title}
       </Typography>
+      <ActionMenuBtn id={id} />
     </Box>
   );
 }

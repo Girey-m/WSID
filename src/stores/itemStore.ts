@@ -42,6 +42,16 @@ class ItemStore {
     console.log("Сохраняем в localStorage:", currentItems);
     localStorage.setItem("items", JSON.stringify(this.items));
   }
+
+  deleteItem(id: string) {
+    const currentItems = [...this.items];
+    const deleteIndex = currentItems.findIndex((item) => item.id === id);
+    if (deleteIndex !== -1) {
+      currentItems.splice(deleteIndex, 1);
+      this.items = currentItems;
+      localStorage.setItem("items", JSON.stringify(this.items));
+    }
+  }
 }
 
 export const itemsStore = new ItemStore();
