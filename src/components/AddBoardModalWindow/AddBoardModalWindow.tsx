@@ -10,7 +10,7 @@ export function AddBoardModalWindow({
 }: AddBoardModalWindowI) {
   const [boardName, setBoardName] = useState("Новая доска");
   const [boardId, setBoardId] = useState("");
-  const [boardColor, setBoardColor] = useState("#000000");
+  const [boardColor, setBoardColor] = useState("#0d09b6");
 
   useEffect(() => {
     const generatedId =
