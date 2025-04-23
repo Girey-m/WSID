@@ -1,12 +1,16 @@
 import { useState } from "react";
 
 import { itemsStore } from "../../stores/itemStore";
+import { EditBoardModalWindow } from "../EditBoardModalWindow/EditBoardModalWindow";
+import { EditBoard } from "../EditBoard/EditBoard";
+import { BoxData } from "../../types/BoxDataType";
 
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export function ActionMenuBtn({ id }: Readonly<{ id: string }>) {
   const [archorEl, setArchorEl] = useState<null | HTMLElement>(null);
+  const [editOpen, setEditOpen] = useState(false);
   const open = Boolean(archorEl);
 
   const openClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,6 +25,16 @@ export function ActionMenuBtn({ id }: Readonly<{ id: string }>) {
     itemsStore.deleteItem(id);
     closeClick();
   };
+
+  const editClick = () => {
+    setEditOpen(true);
+    closeClick();
+  };
+
+  const handleSaveBoard = (newBoard: BoxData) => {
+    EditBoard(newBoard);
+  };
+
   return (
     <Box>
       <IconButton
@@ -49,9 +63,15 @@ export function ActionMenuBtn({ id }: Readonly<{ id: string }>) {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={closeClick}>Редактировать</MenuItem>
+        <MenuItem onClick={editClick}>Редактировать</MenuItem>
         <MenuItem onClick={deleteClick}>Удалить</MenuItem>
       </Menu>
+      <EditBoardModalWindow
+        isVisible={editOpen}
+        onClose={() => setEditOpen(false)}
+        onSave={handleSaveBoard}
+        id={id}
+      />
     </Box>
   );
 }

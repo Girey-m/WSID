@@ -26,7 +26,7 @@ export const App = observer(function App() {
 
   function getBoardFromInitialOrItem(item: BoxData): BoxData {
     const fromInitial = initialBoxes.find((box) => box.id === item.id);
-    return fromInitial || item;
+    return item || fromInitial;
   }
 
   useEffect(() => {

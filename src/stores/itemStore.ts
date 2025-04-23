@@ -52,6 +52,29 @@ class ItemStore {
       localStorage.setItem("items", JSON.stringify(this.items));
     }
   }
+
+  editItem(editedBoard: BoxData) {
+    const currentItems = [...this.items];
+    const editItem = currentItems.findIndex(
+      (item) => item.id === editedBoard.id
+    );
+    currentItems[editItem].title = editedBoard.title;
+    currentItems[editItem].color = editedBoard.color;
+    this.items = currentItems;
+    localStorage.setItem("items", JSON.stringify(this.items));
+  }
+
+  findItem(id: string) {
+    const currentItems = [...this.items];
+    const index = currentItems.findIndex((item) => item.id === id);
+    const neededItem = currentItems[index];
+    return neededItem;
+  }
+
+  getItems() {
+    const items = localStorage.getItem("items");
+    return items;
+  }
 }
 
 export const itemsStore = new ItemStore();
