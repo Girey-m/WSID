@@ -73,7 +73,7 @@ class ItemStore {
 
   getItems() {
     const items = localStorage.getItem("items");
-    return items;
+    return items ? JSON.parse(items) : [];
   }
 }
 

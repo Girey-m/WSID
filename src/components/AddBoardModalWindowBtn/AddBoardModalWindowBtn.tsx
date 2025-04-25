@@ -11,6 +11,7 @@ export function AddBoardModalWindowBtn({
       onClick={openModal}
       variant="contained"
       color="primary"
+      sx={{ height: "50px", fontSize: "16px", width: "100%" }}
       startIcon={<EditIcon sx={{ transform: "scale(1.5)" }} />}
     >
       Создать доску задач
