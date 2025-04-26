@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import type { BoxData } from "../types/BoxDataType";
 import { initialBoxes } from "../constants/initialBoxes";
+import { deleteTasksByBoardId } from "../services/IndexDBUtils";
 
 class ItemStore {
   items: BoxData[] = [];
@@ -46,6 +47,7 @@ class ItemStore {
   deleteItem(id: string) {
     const currentItems = [...this.items];
     const deleteIndex = currentItems.findIndex((item) => item.id === id);
+    deleteTasksByBoardId(id);
     if (deleteIndex !== -1) {
       currentItems.splice(deleteIndex, 1);
       this.items = currentItems;

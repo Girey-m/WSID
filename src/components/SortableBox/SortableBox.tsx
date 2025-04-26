@@ -6,6 +6,7 @@ import { useDndContext } from "@dnd-kit/core";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 
 import { ActionMenuBtn } from "../ActionMenuBtn/ActionMenuBtn";
+import { TaskList } from "../TaskList/TaskList";
 
 export function SortableBox({ id, title, color }: Readonly<BoxData>) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -28,6 +29,7 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         zIndex: isActive ? 10 : 1,
         position: "relative",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 1.5,
@@ -37,37 +39,51 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         },
       }}
     >
-      <Button
-        {...listeners}
-        {...attributes}
+      <Box
         sx={{
-          cursor: isActive ? "grabbing" : "grab",
-          minWidth: "auto",
-          p: 0.5,
-          color: "inherit",
-          "&:hover": {
-            backgroundColor: "rgba(255,255,255,0.15)",
-          },
+          width: 250,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1.5,
+          borderBottom: "1px solid black",
         }}
       >
-        <DragHandleIcon fontSize="small" />
-      </Button>
+        <Button
+          {...listeners}
+          {...attributes}
+          sx={{
+            cursor: isActive ? "grabbing" : "grab",
+            minWidth: "auto",
+            p: 0.5,
+            color: "inherit",
+            "&:hover": {
+              backgroundColor: "rgba(255,255,255,0.15)",
+            },
+          }}
+        >
+          <DragHandleIcon fontSize="small" />
+        </Button>
 
-      <Typography
-        variant="h6"
-        sx={{
-          flexGrow: 1,
-          userSelect: "none",
-          fontWeight: 500,
-          textOverflow: "ellipsis",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          fontSize: "16px",
-        }}
-      >
-        {title}
-      </Typography>
-      <ActionMenuBtn id={id} />
+        <Typography
+          variant="h6"
+          sx={{
+            flexGrow: 1,
+            userSelect: "none",
+            fontWeight: 500,
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            fontSize: "16px",
+          }}
+        >
+          {title}
+        </Typography>
+        <ActionMenuBtn id={id} />
+      </Box>
+      <Box>
+        <TaskList id={id} />
+      </Box>
     </Box>
   );
 }
