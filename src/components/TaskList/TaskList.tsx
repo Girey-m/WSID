@@ -16,11 +16,11 @@ export function TaskList({ id }: Readonly<{ id: string }>) {
     fetchTasks();
 
     const unsubscribe = taskEventBus.subscribe(() => {
-      fetchTasks(); // Когда придет событие - перезагружаем задачи
+      fetchTasks();
     });
 
     return () => {
-      unsubscribe(); // Отписка, чтобы не было утечек памяти
+      unsubscribe();
     };
   }, []);
 
