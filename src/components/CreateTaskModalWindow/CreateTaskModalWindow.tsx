@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CreateTaskModalWindowI } from "../../interface/CreateTaskModalWindowI";
 import {
@@ -12,7 +12,9 @@ import {
   TextField,
 } from "@mui/material";
 import { itemsStore } from "../../stores/itemStore";
-
+import { taskEventBus } from "../../services/EventBus";
+import { getAllTasks } from "../../services/IndexDBUtils";
+import { TaskI } from "../../interface/TaskI";
 export function CreateTaskModalWindow({
   isVisible,
   onClose,
@@ -28,6 +30,26 @@ export function CreateTaskModalWindow({
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskData, setNewTaskData] = useState<string>("");
   const [newPriority, setNewPriority] = useState("Низкий");
+  const [tasks, setTasks] = useState<TaskI[]>([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const allTasks = await getAllTasks();
+      setTasks(allTasks);
+    };
+
+    fetchTasks();
+
+    const unsubscribe = taskEventBus.subscribe(() => {
+      fetchTasks();
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  console.log(tasks);
 
   const commonStyles = {
     color: "white",
@@ -43,15 +65,29 @@ export function CreateTaskModalWindow({
   };
 
   const handleSave = () => {
+    const tasksInSelectedBoard =
+      tasks?.filter((task) => task.boardId === selectedBoardId) || [];
+    const maxOrder =
+      tasksInSelectedBoard.length > 0
+        ? Math.max(...tasksInSelectedBoard.map((task) => task.order))
+        : 0;
     const newTask = {
       boardId: selectedBoardId,
+      taskId: Date.now(),
       taskTitle: newTaskTitle,
       taskDescription: newTaskDescription,
       taskData: newTaskData,
       taskPriority: newPriority,
+      order: maxOrder + 1,
     };
     onSave(newTask);
     onClose();
+
+    setSelectedBoardId("");
+    setNewTaskTitle("");
+    setNewTaskDescription("");
+    setNewTaskData("");
+    setNewPriority("Низкий");
   };
 
   return createPortal(

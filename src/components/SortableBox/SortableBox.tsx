@@ -20,8 +20,8 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
       sx={{
         transform: CSS.Transform.toString(transform),
         transition,
-        margin: 2,
-        padding: 2,
+        margin: 0,
+        padding: 0,
         color: "white",
         borderRadius: 2,
         width: 250,
@@ -30,8 +30,8 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         position: "relative",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
+        alignItems: "stretch",
+        justifyContent: "flex-start",
         gap: 1.5,
         boxShadow: isActive ? 3 : 1,
         "&:hover": {
@@ -45,8 +45,11 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          paddingTop: "10px",
+          paddingLeft: "0",
+          paddingRight: "0",
           gap: 1.5,
-          borderBottom: "1px solid black",
+          boxShadow: "0 2px 8px 1px  black",
         }}
       >
         <Button
@@ -81,7 +84,7 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         </Typography>
         <ActionMenuBtn id={id} />
       </Box>
-      <Box>
+      <Box sx={{ width: "100%" }}>
         <TaskList id={id} />
       </Box>
     </Box>

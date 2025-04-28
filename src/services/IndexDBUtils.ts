@@ -37,10 +37,12 @@ export function openDB(): Promise<IDBDatabase> {
 
 export function addTask(task: {
   boardId: string;
+  taskId: number;
   taskTitle: string;
   taskDescription: string;
   taskData: string;
   taskPriority: string;
+  order: number;
 }): Promise<number> {
   return openDB().then((db) => {
     return new Promise((resolve, reject) => {
