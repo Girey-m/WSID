@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { autorun } from "mobx";
 import {
-  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
   SortableContext,
 } from "@dnd-kit/sortable";
 import { useHandleDragEnd } from "./hooks/useHandleDragEnd";
@@ -56,7 +56,7 @@ export const App = observer(function App() {
         <DragAndDropLayout onDragEnd={handleDragEnd}>
           <SortableContext
             items={itemsStore.items}
-            strategy={verticalListSortingStrategy}
+            strategy={horizontalListSortingStrategy}
           >
             {itemsStore.items.map((item: BoxData) => {
               const box = boards.find((b) => b.id === item.id);

@@ -49,8 +49,6 @@ export function CreateTaskModalWindow({
     };
   }, []);
 
-  console.log(tasks);
-
   const commonStyles = {
     color: "white",
     "& .MuiOutlinedInput-notchedOutline": {

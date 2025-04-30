@@ -10,13 +10,14 @@ import { TaskList } from "../TaskList/TaskList";
 
 export function SortableBox({ id, title, color }: Readonly<BoxData>) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id, data: { type: "board" } });
   const { active } = useDndContext();
   const isActive = active?.id === id;
 
   return (
     <Box
       ref={setNodeRef}
+      data-type={{ type: "column" }}
       sx={{
         transform: CSS.Transform.toString(transform),
         transition,
@@ -84,9 +85,7 @@ export function SortableBox({ id, title, color }: Readonly<BoxData>) {
         </Typography>
         <ActionMenuBtn id={id} />
       </Box>
-      <Box sx={{ width: "100%" }}>
-        <TaskList id={id} />
-      </Box>
+      <TaskList id={id} color={color} />
     </Box>
   );
 }

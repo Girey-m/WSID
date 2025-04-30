@@ -17,10 +17,21 @@ export function openDB(): Promise<IDBDatabase> {
       const db = (event.target as IDBOpenDBRequest).result;
 
       if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, {
+        const store = db.createObjectStore(STORE_NAME, {
           keyPath: "id",
           autoIncrement: true,
         });
+
+        // Вот он — спасительный индекс
+        store.createIndex("boardId", "boardId", { unique: false });
+      } else {
+        const store = (
+          event.target as IDBOpenDBRequest
+        ).transaction!.objectStore(STORE_NAME);
+
+        if (!store.indexNames.contains("boardId")) {
+          store.createIndex("boardId", "boardId", { unique: false });
+        }
       }
     };
 
@@ -98,6 +109,81 @@ export function getAllTasks(): Promise<TaskI[]> {
       request.onsuccess = () => resolve(request.result as TaskI[]);
       request.onerror = () =>
         reject(new Error("Ошибка при получении всех задач"));
+    });
+  });
+}
+
+// ... существующий код ...
+
+export function updateTask(
+  taskId: number,
+  updates: Partial<TaskI>
+): Promise<void> {
+  return openDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.get(taskId);
+
+      request.onsuccess = () => {
+        const existingTask = request.result;
+        if (!existingTask) {
+          reject(new Error("Задача не найдена"));
+          return;
+        }
+
+        const updatedTask = { ...existingTask, ...updates };
+        const putRequest = store.put(updatedTask);
+
+        putRequest.onsuccess = () => {
+          taskEventBus.emit();
+          resolve();
+        };
+
+        putRequest.onerror = () =>
+          reject(new Error("Ошибка при обновлении задачи"));
+      };
+
+      request.onerror = () => reject(new Error("Ошибка при поиске задачи"));
+    });
+  });
+}
+
+export function reorderTasksInBoard(
+  boardId: string,
+  newOrder: number[]
+): Promise<void> {
+  return openDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.index("boardId").getAll(boardId);
+
+      request.onsuccess = async () => {
+        const tasks = request.result as TaskI[];
+        const taskMap = new Map(tasks.map((task) => [task.taskId, task]));
+
+        try {
+          for (let i = 0; i < newOrder.length; i++) {
+            const taskId = newOrder[i];
+            const task = taskMap.get(taskId);
+            if (task) {
+              task.order = i;
+              await new Promise<void>((res, rej) => {
+                const updateRequest = store.put(task);
+                updateRequest.onsuccess = () => res();
+                updateRequest.onerror = () => rej();
+              });
+            }
+          }
+          taskEventBus.emit();
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      request.onerror = () => reject(new Error("Ошибка при получении задач"));
     });
   });
 }
